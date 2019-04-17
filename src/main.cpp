@@ -150,59 +150,6 @@ void test_controller(void) {
   printf("Self-test:\t%02X\n", read_data());
 }
 
-void keyb_send(uint8_t data) {
-  uint8_t status;
-
-  do {
-    status = read_status();
-  } while(status & STATUS_IN_BUF);
-
-  outb(data, 0x60);
-}
-
-uint8_t keyb_read(void) {
-  uint8_t status;
-
-  do {
-    status = read_status();
-  } while(!(status & STATUS_OUT_BUF));
-
-  return inb(0x60);
-}
-
-void keyb_cycle() {
-  printf("Keyboard reset\n");
-  keyb_send(0xFF);
-  printf("%02X\n", inb(0x60));
-  printf("%02X\n", inb(0x60));
-
-  printf("Set scan code set 3\n");
-  keyb_send(0xF0);
-  printf("%02X\n", inb(0x60));
-  keyb_send(0x03);
-  printf("%02X\n", inb(0x60));
-
-  printf("Set repeat rate\n");
-  keyb_send(0xF3);
-  printf("%02X\n", inb(0x60));
-  keyb_send(0x00);
-  printf("%02X\n", inb(0x60));
-
-  printf("Enable scan:\n");
-
-  keyb_send(0xF4);
-  printf("%02X\n", inb(0x60));
-
-  printf("Cycle:\n");
-
-  while(1) {
-    uint8_t data = keyb_read();
-    printf("Scan code: %02X\n", data);
-    delay(10);
-  }
-
-}
-
 void mouse_send(uint8_t data) {
   outb(0xD4, 0x64);
 
