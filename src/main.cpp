@@ -264,6 +264,9 @@ void mouse_cycle(void) {
 
   while (1) {
     Receive(proxy, 0, 0);
+    uint8_t z_move = inb(PORT_DATA);;
+
+    Receive(proxy, 0, 0);
     uint8_t status = inb(PORT_DATA);;
 
     Receive(proxy, 0, 0);
@@ -272,10 +275,23 @@ void mouse_cycle(void) {
     Receive(proxy, 0, 0);
     uint8_t y_move = inb(PORT_DATA);;
 
-    Receive(proxy, 0, 0);
-    uint8_t z_move = inb(PORT_DATA);;
+    printf("Status: %02X ", status);
 
-    printf("Status: %02X, X: %02X, Y: %02X, Z: %02X\n", status, x_move, y_move, z_move);
+    if (status & 0x1) {
+      printf("Left btn\t");
+    }
+
+    if (status & 0x2) {
+      printf("Right btn\t");
+    }
+
+    if (status & 0x4) {
+      printf("Center btn\t");
+    }
+
+    printf("\n");
+
+    printf("X: %02X, Y: %02X, Z: %02X\n", x_move, y_move, z_move);
 
     //Receive(proxy, 0, 0 );
     //printf("MOUSE\n");
