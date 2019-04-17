@@ -151,7 +151,7 @@ void test_controller(void) {
 }
 
 void mouse_send(uint8_t data) {
-  outb(0xD4, 0x64);
+  outb(0xD4, PORT_STAT_CMD);
 
   uint8_t status;
 
@@ -159,11 +159,11 @@ void mouse_send(uint8_t data) {
     status = read_status();
   } while(status & STATUS_IN_BUF);
 
-  outb(data, 0x60);
+  outb(data, PORT_DATA);
 }
 
 uint8_t mouse_read(void) {
-  //outb(0xD4, 0x64);
+  //outb(0xD4, PORT_STAT_CMD);
 
   uint8_t status;
 
@@ -171,7 +171,7 @@ uint8_t mouse_read(void) {
     status = read_status();
   } while(!(status & STATUS_OUT_BUF));
   
-  return inb(0x60);
+  return inb(PORT_DATA);
 }
 
 void mouse_reset(void) {
@@ -227,7 +227,7 @@ pid_t             proxy;
 volatile uint8_t  irq_data;
 
 pid_t far isr_handler() {
-  //irq_data = inb(0x60);
+  //irq_data = inb(PORT_DATA);
 
   return proxy;
 }
@@ -264,16 +264,16 @@ void mouse_cycle(void) {
 
   while (1) {
     Receive(proxy, 0, 0);
-    uint8_t status = inb(0x60);;
+    uint8_t status = inb(PORT_DATA);;
 
     Receive(proxy, 0, 0);
-    uint8_t x_move = inb(0x60);;
+    uint8_t x_move = inb(PORT_DATA);;
 
     Receive(proxy, 0, 0);
-    uint8_t y_move = inb(0x60);;
+    uint8_t y_move = inb(PORT_DATA);;
 
     Receive(proxy, 0, 0);
-    uint8_t z_move = inb(0x60);;
+    uint8_t z_move = inb(PORT_DATA);;
 
     printf("Status: %02X, X: %02X, Y: %02X, Z: %02X\n", status, x_move, y_move, z_move);
 
@@ -292,7 +292,7 @@ int main() {
 /*  uint8_t status = read_status();
 
   while (status & STATUS_OUT_BUF) {
-    inb(0x60);
+    inb(PORT_DATA);
     status = read_status();
   }*/
 
